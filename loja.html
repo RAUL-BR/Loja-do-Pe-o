@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja do Peão - Mercado Country Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+        
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+        
+        .product-image-zoom {
+            transition: transform 0.3s ease;
+            transform-origin: left top;
+        }
+        
+        .product-image-container.zoomed .product-image-zoom {
+            transform: scale(2);
+            cursor: zoom-out;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .category-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-card .product-image {
+            transition: transform 0.5s ease;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #f97316;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        .cart-item {
+            transition: background-color 0.3s ease;
+        }
+        
+        .cart-item:hover {
+            background-color: rgba(249, 115, 22, 0.05);
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .cart-pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.1));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            animation: shine 6s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        .special-offer {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .special-offer::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .special-offer::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .rating-stars {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .rating-stars::before {
+            content: '★★★★★';
+            color: #e5e7eb;
+        }
+        
+        .rating-stars span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        
+        .rating-stars span::before {
+            content: '★★★★★';
+            color: #f97316;
+        }
+        
+        .add-to-cart {
+            transition: all 0.3s ease;
+        }
+        
+        .text-red-500 {
+            color: #ef4444;
+        }
+        
+        .favorite-btn i.fas {
+            color: #ef4444;
+        }
+        
+        .add-to-cart:hover {
+            transform: rotate(90deg);
+            background-color: #f97316;
+            color: white;
+        }
+        
+        .brand-logo {
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .brand-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        
+        .footer-link {
+            position: relative;
+        }
+        
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: #954d1a;
+            transition: width 0.3s ease;
+        }
+        
+        .footer-link:hover::after {
+            width: 100%;
+        }
+        
+        .payment-method {
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover, .payment-method.active {
+            border-color: #f97316;
+            background-color: rgba(249, 115, 22, 0.05);
+        }
+        
+        .payment-method i {
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover i, .payment-method.active i {
+            color: #f97316;
+            transform: scale(1.1);
+        }
+        
+        .quantity-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .quantity-btn:hover {
+            background-color: #f97316;
+            color: white;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="bg-orange-500 text-white p-2 rounded-full mr-2 transform hover:rotate-12 transition duration-300">
+                        <i class="fas fa-hat-cowboy text-2xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-orange-600">Loja do Peão</h1>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 mx-6">
+                    <div class="relative w-full max-w-xl">
+                        <input type="text" placeholder="Buscar produtos..." class="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        <button class="absolute right-0 top-0 h-full px-4 bg-orange-500 text-white rounded-r-full hover:bg-orange-600 transition duration-300">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="flex items-center space-x-4">
+                    <button id="account-btn" class="hidden md:flex items-center text-gray-700 hover:text-orange-600 transition duration-300">
+                        <i class="fas fa-user-circle text-xl mr-1"></i>
+                        <span>Minha Conta</span>
+                    </button>
+                    
+                    <button id="favorites-btn" class="hidden md:flex items-center text-gray-700 hover:text-orange-600 transition duration-300 relative">
+                        <i class="fas fa-heart text-xl mr-1"></i>
+                        <span>Favoritos</span>
+                        <span id="favorites-count" class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    
+                    <button id="cart-btn" class="flex items-center text-gray-700 hover:text-orange-600 transition duration-300 relative">
+                        <i class="fas fa-shopping-cart text-xl mr-1"></i>
+                        <span class="hidden md:inline">Carrinho</span>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
+                    
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-orange-600 transition duration-300">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Search -->
+            <div class="mt-3 md:hidden">
+                <div class="relative w-full">
+                    <input type="text" placeholder="Buscar produtos..." class="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    <button class="absolute right-0 top-0 h-full px-4 bg-orange-500 text-white rounded-r-full hover:bg-orange-600 transition duration-300">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bg-orange-600 text-white hidden md:block">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex space-x-6">
+                        <a href="#" class="nav-link py-3 px-2 font-medium hover:bg-orange-700 transition duration-300">Início</a>
+                        <div class="dropdown relative">
+                            <button class="nav-link py-3 px-2 font-medium hover:bg-orange-700 transition duration-300 flex items-center">
+                                Categorias <i class="fas fa-chevron-down ml-1 text-sm"></i>
+                            </button>
+                            <div class="dropdown-menu absolute left-0 mt-0 w-48 bg-white text-gray-800 shadow-lg rounded-md hidden z-50 overflow-hidden">
+                                <a href="#" class="block px-4 py-2 hover:bg-orange-50 transition duration-300 flex items-center">
+                                    <i class="fas fa-hat-cowboy mr-2 text-orange-600"></i> Chapéus
+                                </a>
+                                <a href="#" class="block px-4 py-2 hover:bg-orange-50 transition duration-300 flex items-center">
+                                    <i class="fas fa-boot mr-2 text-orange-600"></i> Botas
+                                </a>
+                                <a href="#" class="block px-4 py-2 hover:bg-orange-50 transition duration-300 flex items-center">
+                                    <i class="fas fa-tshirt mr-2 text-orange-600"></i> Roupas
+                                </a>
+                                <a href="#" class="block px-4 py-2 hover:bg-orange-50 transition duration-300 flex items-center">
+                                    <i class="fas fa-ring mr-2 text-orange-600"></i> Acessórios
+                                </a>
+                                <a href="#" class="block px-4 py-2 hover:bg-orange-50 transition duration-300 flex items-center">
+                                    <i class="fas fa-horse mr-2 text-orange-600"></i> Equipamentos
+                                </a>
+                            </div>
+                        </div>
+                        <a href="#" class="nav-link py-3 px-2 font-medium hover:bg-orange-700 transition duration-300">Ofertas</a>
+                        <a href="#" class="nav-link py-3 px-2 font-medium hover:bg-orange-700 transition duration-300">Novidades</a>
+                        <a href="#" class="nav-link py-3 px-2 font-medium hover:bg-orange-700 transition duration-300">Contato</a>
+                    </div>
+                    
+                    <div class="text-sm bg-orange-700 px-3 py-1 rounded-full">
+                        <span class="hidden lg:inline">Frete grátis para compras acima de R$ 500</span>
+                        <span class="lg:hidden">Frete grátis > R$500</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-opacity duration-300">
+        <div class="bg-white h-full w-4/5 max-w-sm ml-auto p-4 transform transition-transform duration-300 translate-x-full">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-orange-600">Menu</h2>
+                <button id="close-mobile-menu" class="text-gray-700 hover:text-orange-600 transition duration-300">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <a href="#" class="block py-2 px-4 bg-orange-50 text-orange-600 rounded-lg font-medium">Início</a>
+                
+                <div>
+                    <button id="mobile-categories-btn" class="w-full flex justify-between items-center py-2 px-4 text-gray-700 hover:text-orange-600 transition duration-300 font-medium">
+                        <span>Categorias</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div id="mobile-categories" class="hidden pl-4 mt-2 space-y-2">
+                        <a href="#" class="block py-2 text-gray-600 hover:text-orange-600 transition duration-300 flex items-center">
+                            <i class="fas fa-hat-cowboy mr-2 text-orange-500"></i> Chapéus
+                        </a>
+                        <a href="#" class="block py-2 text-gray-600 hover:text-orange-600 transition duration-300 flex items-center">
+                            <i class="fas fa-boot mr-2 text-orange-500"></i> Botas
+                        </a>
+                        <a href="#" class="block py-2 text-gray-600 hover:text-orange-600 transition duration-300 flex items-center">
+                            <i class="fas fa-tshirt mr-2 text-orange-500"></i> Roupas
+                        </a>
+                        <a href="#" class="block py-2 text-gray-600 hover:text-orange-600 transition duration-300 flex items-center">
+                            <i class="fas fa-ring mr-2 text-orange-500"></i> Acessórios
+                        </a>
+                        <a href="#" class="block py-2 text-gray-600 hover:text-orange-600 transition duration-300 flex items-center">
+                            <i class="fas fa-horse mr-2 text-orange-500"></i> Equipamentos
+                        </a>
+                    </div>
+                </div>
+                
+                <a href="#" class="block py-2 px-4 text-gray-700 hover:text-orange-600 transition duration-300">Ofertas</a>
+                <a href="#" class="block py-2 px-4 text-gray-700 hover:text-orange-600 transition duration-300">Novidades</a>
+                <a href="#" class="block py-2 px-4 text-gray-700 hover:text-orange-600 transition duration-300">Contato</a>
+                
+                <div class="border-t border-gray-200 pt-4">
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:text-orange-600 transition duration-300 flex items-center">
+                        <i class="fas fa-user-circle mr-2"></i> Minha Conta
+                    </a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:text-orange-600 transition duration-300 flex items-center">
+                        <i class="fas fa-heart mr-2"></i> Favoritos
+                    </a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:text-orange-600 transition duration-300 flex items-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> Carrinho
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Banner -->
+        <div class="hero-banner rounded-xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between overflow-hidden">
+            <div class="md:w-1/2 mb-4 md:mb-0">
+                <h2 class="text-3xl font-bold text-orange-800 mb-2">Coleção Country 2025</h2>
+                <p class="text-orange-700 mb-4">Os melhores produtos para o seu estilo peão com até 30% de desconto</p>
+                <button class="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 font-medium transition duration-300 shadow-md hover:shadow-lg">
+                    Compre agora
+                </button>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <img src="IMG/country1.jpeg"  alt="Coleção Country" class="rounded-lg max-h-60 object-cover shadow-md">
+            </div>
+        </div>
+        
+        <!-- Categories -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-tags mr-2 text-orange-500"></i> Categorias
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                <a href="#" class="category-card bg-white rounded-lg p-4 shadow-sm flex flex-col items-center">
+                    <div class="bg-orange-100 p-4 rounded-full mb-3">
+                        <i class="fas fa-hat-cowboy text-orange-600 text-2xl"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">Chapéus</span>
+                </a>
+                
+                <a href="#" class="category-card bg-white rounded-lg p-4 shadow-sm flex flex-col items-center">
+                    <div class="bg-orange-100 p-4 rounded-full mb-3">
+                        <i class="fas fa-shoe-prints text-orange-600 text-2xl"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">Botas</span>
+                </a>
+                
+                <a href="#" class="category-card bg-white rounded-lg p-4 shadow-sm flex flex-col items-center">
+                    <div class="bg-orange-100 p-4 rounded-full mb-3">
+                        <i class="fas fa-tshirt text-orange-600 text-2xl"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">Roupas</span>
+                </a>
+                
+                <a href="#" class="category-card bg-white rounded-lg p-4 shadow-sm flex flex-col items-center">
+                    <div class="bg-orange-100 p-4 rounded-full mb-3">
+                        <i class="fas fa-ring text-orange-600 text-2xl"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">Acessórios</span>
+                </a>
+                
+                <a href="#" class="category-card bg-white rounded-lg p-4 shadow-sm flex flex-col items-center">
+                    <div class="bg-orange-100 p-4 rounded-full mb-3">
+                        <i class="fas fa-horse text-orange-600 text-2xl"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">Equipamentos</span>
+                </a>
+            </div>
+            <div class="mt-4 text-center">
+                <button id="reset-filters" class="text-orange-600 hover:text-orange-700 font-medium transition duration-300">
+                    <i class="fas fa-sync-alt mr-1"></i> Limpar Filtro
+                </button>
+            </div>
+        </section>
+        
+        <!-- Featured Products -->
+        <section class="mb-10">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-star mr-2 text-orange-500"></i> Destaques
+                </h2>
+                <a href="#" class="text-orange-600 hover:text-orange-700 font-medium transition duration-300 flex items-center">
+                    Ver todos <i class="fas fa-arrow-right ml-1 text-sm"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Product 1 -->
+                <!-- Product 9 - Bota Feminina -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="botas" data-id="9">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/botafeminina.jpeg" alt="Bota Feminina Country" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md favorite-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Bota Feminina Country</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 95%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(28)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 299,90</span>
+                                <span class="block text-xs text-gray-500 line-through">R$ 349,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 10 - Camiseta Country -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="roupas" data-id="10">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/camisamassculina" alt="Camiseta Country" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md favorite-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Camiseta Country Masculina</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 90%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(35)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 79,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 11 - Camisa Feminina -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="roupas" data-id="11">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/camisafemenina.jpeg" alt="Camisa Feminina Country" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md favorite-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Camisa Feminina Country</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 85%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(42)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 119,90</span>
+                                <span class="block text-xs text-gray-500 line-through">R$ 149,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 12 - Laço Feminino -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="acessórios" data-id="12">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/fitafeminino.jpeg" alt="Laço Feminino Country" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md favorite-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Laço Feminino Country</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 100%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(19)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 69,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 13 - Bota de Couro Feminina -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="botas" data-id="13">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/botafemenina2.jpeg" alt="Bota de Couro Feminina" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md favorite-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Bota de Couro Feminina</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 95%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(32)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 349,90</span>
+                                <span class="block text-xs text-gray-500 line-through">R$ 399,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="chapéus" data-id="1">
+                    <div class="relative overflow-hidden">
+                        <div class="relative overflow-hidden">
+                            <div class="w-full h-48 overflow-hidden" onclick="showProductDetails(1)">
+                                <img src="IMG/chapeucountry.jpeg" alt="Chapéu de Peão" class="w-full h-full object-cover product-image">
+                            </div>
+                            <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md favorite-btn">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md favorite-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Chapéu de Peão Premium</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 90%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(48)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 189,90</span>
+                                <span class="block text-xs text-gray-500 line-through">R$ 219,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="botas" data-id="2" onclick="showProductDetails(2)">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/botas.jpeg" alt="Bota Country" class="w-full h-48 object-cover product-image">
+                        <button class="favorite-btn absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-red-500 transition duration-300 shadow-md">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Bota Country Couro Legítimo</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 80%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(32)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 349,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="acessórios" data-id="3" onclick="showProductDetails(3)">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/cinto.jpeg" alt="Cinto de Prata" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-orange-600 transition duration-300 shadow-md">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Cinto de Prata com Fivela</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 100%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(56)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 129,90</span>
+                                <span class="block text-xs text-gray-500 line-through">R$ 159,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="roupas" data-id="4" onclick="showProductDetails(4)">
+                    <div class="relative overflow-hidden">
+                        <img src="IMG/camisaxadrex.jpeg" alt="Camisa Xadrez" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-orange-600 transition duration-300 shadow-md">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Camisa Xadrez Country</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 90%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(41)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 99,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Special Offer -->
+        <section class="mb-10">
+            <div class="special-offer text-white rounded-xl p-6">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="md:w-1/2 mb-4 md:mb-0">
+                        <span class="bg-white text-orange-600 px-3 py-1 rounded-full text-sm font-medium mb-2 inline-block">Oferta Especial</span>
+                        <h2 class="text-2xl font-bold mb-2">Kit Completo Peão</h2>
+                        <p class="mb-4">Chapéu, Bota, Camisa e Cinto por apenas R$ 699,90</p>
+                        <p class="text-sm opacity-90">Economize R$ 259,90 comprando o kit completo</p>
+                        <button class="mt-4 bg-white text-orange-600 px-6 py-2 rounded-full hover:bg-gray-100 font-medium transition duration-300 shadow-md hover:shadow-lg">
+                            Comprar Kit
+                        </button>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <img src="IMG/kitcompleto.jpeg" alt="Kit Peão" class="rounded-lg max-h-48 object-cover shadow-md">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- New Arrivals -->
+        <section class="mb-10">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-bolt mr-2 text-orange-500"></i> Novidades
+                </h2>
+                <a href="#" class="text-orange-600 hover:text-orange-700 font-medium transition duration-300 flex items-center">
+                    Ver todos <i class="fas fa-arrow-right ml-1 text-sm"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Product 5 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="roupas" data-id="5" onclick="showProductDetails(5)">
+                    <div class="relative overflow-hidden">
+                        <span class="product-badge">Novo</span>
+                        <img src="IMG/coletecouro.jpeg" alt="Colete de Couro" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-orange-600 transition duration-300 shadow-md">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Colete de Couro Premium</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 80%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(12)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 279,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 6 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="acessórios" data-id="6" onclick="showProductDetails(6)">
+                    <div class="relative overflow-hidden">
+                        <span class="product-badge">Novo</span>
+                        <img src="IMG/laço.jpeg" alt="Laço Country" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-orange-600 transition duration-300 shadow-md">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Laço Country Estilizado</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 100%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(8)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 89,90</span>
+                                <span class="block text-xs text-gray-500 line-through">R$ 109,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 7 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="roupas" data-id="7" onclick="showProductDetails(7)">
+                    <div class="relative overflow-hidden">
+                        <span class="product-badge">Novo</span>
+                        <img src="IMG/calçajeans.jpeg" alt="Calça Jeans" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-orange-600 transition duration-300 shadow-md">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Calça Jeans Resistente</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 90%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(23)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 159,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 8 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer" data-category="acessórios" data-id="8" onclick="showProductDetails(8)">
+                    <div class="relative overflow-hidden">
+                        <span class="product-badge">Novo</span>
+                        <img src="IMG/luvas.jpeg" alt="Luvas de Couro" class="w-full h-48 object-cover product-image">
+                        <button class="absolute top-2 right-2 bg-white p-2 rounded-full text-gray-700 hover:text-orange-600 transition duration-300 shadow-md">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-800 mb-1">Luvas de Couro para Montaria</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="rating-stars">
+                                <span style="width: 80%"></span>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(17)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-orange-600">R$ 79,90</span>
+                                <span class="block text-xs text-gray-500 line-through">R$ 99,90</span>
+                            </div>
+                            <button class="add-to-cart bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-600 hover:text-white transition duration-300">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Brands -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-award mr-2 text-orange-500"></i> Marcas Parceiras
+            </h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+                    <div class="flex items-center justify-center p-4">
+                        <img src="IMG/logo1.jpeg" alt="Western Gear" class="brand-logo h-10 object-contain">
+                    </div>
+                    <div class="flex items-center justify-center p-4">
+                        <img src="IMG/ranch.jpeg" alt="Ranch Style" class="brand-logo h-10 object-contain">
+                    </div>
+                    <div class="flex items-center justify-center p-4">
+                        <img src="IMG/cowboytagline.jpeg" alt="Cowboys Tagline" class="brand-logo h-10 object-contain">
+                    </div>
+                    <div class="flex items-center justify-center p-4">
+                        <img src="IMG/riders.jpeg" alt="Texas Rider" class="brand-logo h-10 object-contain">
+                    </div>
+                    <div class="flex items-center justify-center p-4">
+                        <img src="IMG/Brand.jpeg" alt="Brand" class="brand-logo h-10 object-contain">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Testimonials -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-quote-left mr-2 text-orange-500"></i> O que nossos clientes dizem
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="rating-stars">
+                            <span style="width: 100%"></span>
+                        </div>
+                        <span class="text-gray-600 text-sm ml-2">5.0</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Produtos de alta qualidade e atendimento excelente. Meu chapéu chegou antes do prazo e é exatamente como na foto!"</p>
+                    <div class="flex items-center">
+                        <div class="bg-orange-100 text-orange-600 p-2 rounded-full mr-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium">João Silva</h4>
+                            <p class="text-sm text-gray-500">São Paulo, SP</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="rating-stars">
+                            <span style="width: 80%"></span>
+                        </div>
+                        <span class="text-gray-600 text-sm ml-2">4.0</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Adorei as botas que comprei, muito confortáveis e bonitas. Só demorou um pouco mais para chegar, mas valeu a pena esperar."</p>
+                    <div class="flex items-center">
+                        <div class="bg-orange-100 text-orange-600 p-2 rounded-full mr-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium">Edoni Dionisio</h4>
+                            <p class="text-sm text-gray-500">Palmital, PR</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="rating-stars">
+                            <span style="width: 100%"></span>
+                        </div>
+                        <span class="text-gray-600 text-sm ml-2">5.0</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Comprei o kit completo e estou muito satisfeito. A qualidade dos produtos superou minhas expectativas. Recomendo!"</p>
+                    <div class="flex items-center">
+                        <div class="bg-orange-100 text-orange-600 p-2 rounded-full mr-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium">Carlos Souza</h4>
+                            <p class="text-sm text-gray-500">Goiânia, GO</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Product Details Modal -->
+    <div id="product-details-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Detalhes do Produto</h3>
+                    <button id="close-product-modal" class="text-gray-500 hover:text-orange-600 transition duration-300">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="product-image-container" id="product-image-container">
+                        <img id="product-detail-image" src="" alt="Produto" class="w-full rounded-lg product-image-zoom">
+                    </div>
+                    <div>
+                        <h2 id="product-detail-name" class="text-2xl font-bold mb-2"></h2>
+                        <div class="flex items-center mb-4">
+                            <div class="rating-stars">
+                                <span id="product-detail-rating"></span>
+                            </div>
+                            <span id="product-detail-reviews" class="text-gray-600 text-sm ml-2"></span>
+                        </div>
+                        <p id="product-detail-price" class="text-3xl font-bold text-orange-600 mb-4"></p>
+                        <p id="product-detail-description" class="text-gray-700 mb-6"></p>
+                        
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center border rounded-lg">
+                                <button class="quantity-btn px-3 py-1 text-lg">-</button>
+                                <span class="px-4">1</span>
+                                <button class="quantity-btn px-3 py-1 text-lg">+</button>
+                            </div>
+                            <div class="flex space-x-4">
+                                <button class="favorite-btn bg-white border border-gray-300 p-2 rounded-full hover:text-red-500 transition duration-300">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="add-to-cart-detail bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 font-medium transition duration-300">
+                                    Adicionar ao Carrinho
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 pt-4">
+                            <h4 class="font-medium mb-2">Detalhes</h4>
+                            <ul id="product-detail-specs" class="text-gray-700 space-y-1"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-10 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4 text-orange-400">Loja do Peão</h3>
+                    <p class="mb-4 text-gray-400">A melhor loja de produtos country do Brasil. Qualidade e tradição em cada peça.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-orange-400 transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-orange-400 transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-orange-400 transition duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-orange-400 transition duration-300">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Institucional</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Sobre Nós</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Nossas Lojas</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Trabalhe Conosco</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Política de Privacidade</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Termos de Uso</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Ajuda</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Central de Atendimento</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Perguntas Frequentes</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 transition duration-300">Formas de Pagamento</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-orange-400 ransition duration-300">Entregas e Prazos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Cadastre-se</h3>
+                    <p class="mb-4 text-gray-400">Cadastre-se e receba nossas ofertas e novidades.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Seu e-mail" class="px-4 py-2 w-full rounded-l-lg focus:outline-none text-gray-800">
+                        <button class="bg-orange-500 px-4 py-2 rounded-r-lg hover:bg-orange-600 transition duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-gray-400 text-sm">© 2025 Loja do Peão. Todos os direitos reservados.</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <img src="IMG/visa.jpeg" alt="Visa" class="h-6">
+                        <img src="IMG/mastercard.jpeg" alt="Mastercard" class="h-6">
+                        <img src="IMG/american.jpeg" alt="American Express" class="h-6">
+                        <img src="IMG/boleto.jpeg" alt="Boleto" class="h-6">
+                        <img src="IMG/pix.jpeg" alt="Pix" class="h-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Favorites Sidebar -->
+    <div id="favorites-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="h-full flex flex-col">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-bold flex items-center">
+                    <i class="fas fa-heart mr-2 text-red-500"></i> Meus Favoritos
+                </h3>
+                <button id="close-favorites" class="text-gray-500 hover:text-red-600 transition duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="favorites-items" class="flex-1 overflow-y-auto p-4 scrollbar-hide">
+                <div class="text-center text-gray-500 py-10">
+                    <i class="fas fa-heart text-4xl mb-2 text-gray-200"></i>
+                    <p>Seus favoritos estão vazios</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="h-full flex flex-col">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-bold flex items-center">
+                    <i class="fas fa-shopping-cart mr-2 text-orange-500"></i> Meu Carrinho
+                </h3>
+                <button id="close-cart" class="text-gray-500 hover:text-orange-600 transition duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="cart-items" class="flex-1 overflow-y-auto p-4 scrollbar-hide">
+                <!-- Cart items will be added here dynamically -->
+                <div class="text-center text-gray-500 py-10">
+                    <i class="fas fa-shopping-cart text-4xl mb-2 text-gray-200"></i>
+                    <p>Seu carrinho está vazio</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 p-4">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-700">Subtotal:</span>
+                    <span id="cart-subtotal" class="font-bold">R$ 12,00</span>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <span class="text-gray-700">Frete:</span>
+                    <span id="cart-shipping" class="font-bold"></span>
+                    <span id="Calcular" class="font-bold">Calcular</span>
+                    <span id="frete" class="font-bold">R$ 12,00</span>
+                </div>
+                <div class="flex justify-between text-lg font-bold mb-4">
+                    <span class="text-gray-700">Total:</span>
+                    <span id="cart-total" class="text-orange-600">R$ 12,00</span>
+                </div>
+                
+                <button id="checkout-btn" class="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 font-medium transition duration-300">
+                    Finalizar Compra
+                </button>
+                
+                <button class="w-full mt-2 border border-orange-500 text-orange-500 py-3 rounded-lg hover:bg-orange-50 font-medium transition duration-300">
+                    Continuar Comprando
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+    <!-- Floating Hat Button -->
+    <button id="hat-button" class="fixed bottom-6 left-6 bg-orange-500 text-white p-4 rounded-full shadow-lg hover:bg-orange-600 transition duration-300 z-40">
+        <i class="fas fa-hat-cowboy text-2xl"></i>
+    </button>
+
+    <!-- Image Modal -->
+    <div id="hat-image-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md mx-4 p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Slogan Loja do Peão</h3>
+                <button id="close-hat-modal" class="text-gray-500 hover:text-orange-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <img src="IMG/slogan.jpeg" alt="slogan Loja do Peão" class="rounded-lg w-full">
+        </div>
+    </div>
+    
+    <!-- Account Modal -->
+    <div id="account-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 scale-95 opacity-0">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Minha Conta</h3>
+                    <button id="close-account-modal" class="text-gray-500 hover:text-orange-600 transition duration-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="flex border-b mb-4">
+                    <button class="tab-btn py-2 px-4 font-medium border-b-2 border-orange-500 text-orange-600" data-tab="login">Login</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="register">Cadastro</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="login" class="tab-content active">
+                    <form id="login-form">
+                        <div class="mb-4">
+                            <label for="login-email" class="block text-gray-700 mb-2">E-mail</label>
+                            <input type="email" id="login-email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="login-password" class="block text-gray-700 mb-2">Senha</label>
+                            <input type="password" id="login-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        <div class="mb-4 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="remember-me" class="mr-2">
+                                <label for="remember-me" class="text-gray-700">Lembrar-me</label>
+                            </div>
+                            <a href="#" class="text-orange-600 hover:underline">Esqueci minha senha</a>
+                        </div>
+                        <button type="submit" class="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 font-medium transition duration-300">
+                            Entrar
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="register" class="tab-content">
+                    <form id="register-form">
+                        <div class="mb-4">
+                            <label for="register-name" class="block text-gray-700 mb-2">Nome Completo</label>
+                            <input type="text" id="register-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="register-email" class="block text-gray-700 mb-2">E-mail</label>
+                            <input type="email" id="register-email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="register-password" class="block text-gray-700 mb-2">Senha</label>
+                            <input type="password" id="register-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="register-confirm-password" class="block text-gray-700 mb-2">Confirmar Senha</label>
+                            <input type="password" id="register-confirm-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <input type="checkbox" id="terms" class="mr-2" required>
+                            <label for="terms" class="text-gray-700">Eu concordo com os <a href="#" class="text-orange-600 hover:underline">Termos de Uso</a> e <a href="#" class="text-orange-600 hover:underline">Política de Privacidade</a></label>
+                        </div>
+                        <button type="submit" class="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 font-medium transition duration-300">
+                            Cadastrar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Favorites functionality
+        let favoritesCount = 0;
+        const favoritesBtn = document.getElementById('favorites-btn');
+        const favoritesCountElement = document.getElementById('favorites-count');
+        const favoritesSidebar = document.getElementById('favorites-sidebar');
+        const closeFavorites = document.getElementById('close-favorites');
+        const favoritesItems = document.getElementById('favorites-items');
+        
+        // Initialize favorites count display
+        favoritesCountElement.textContent = '0';
+        favoritesCountElement.classList.add('hidden');
+        
+        // Toggle favorites sidebar
+        favoritesBtn.addEventListener('click', () => {
+            favoritesSidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+        });
+
+        closeFavorites.addEventListener('click', () => {
+            favoritesSidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        });
+
+        // Add to favorites
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const heartIcon = this.querySelector('i');
+                
+                // Only add if not already favorited
+                if (!heartIcon.classList.contains('fas')) {
+                    heartIcon.classList.remove('far');
+                    heartIcon.classList.add('fas', 'text-red-500');
+                    
+                    // Update favorites count
+                    favoritesCount++;
+                    favoritesCountElement.textContent = favoritesCount;
+                    if (favoritesCount > 0) {
+                        favoritesCountElement.classList.remove('hidden');
+                    }
+                    
+                    const productCard = this.closest('.product-card');
+                    const productName = productCard.querySelector('h3').textContent;
+                    const productPrice = productCard.querySelector('.font-bold.text-orange-600').textContent;
+                    const productImage = productCard.querySelector('img').src;
+                    const productId = productCard.getAttribute('data-id') || Date.now();
+                    
+                    const favoriteItem = document.createElement('div');
+                    favoriteItem.className = 'favorite-item bg-orange-50 rounded-lg p-3 mb-3 flex items-center';
+                    favoriteItem.setAttribute('data-id', productId);
+                    favoriteItem.innerHTML = `
+                        <img src="${productImage}" alt="${productName}" class="w-16 h-16 object-cover rounded mr-3">
+                        <div class="flex-1">
+                            <h4 class="font-medium">${productName}</h4>
+                            <p class="text-orange-600 font-bold">${productPrice}</p>
+                        </div>
+                        <button class="remove-favorite text-gray-500 hover:text-red-500">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    // Remove empty favorites message if it exists
+                    const emptyFavorites = favoritesItems.querySelector('.text-center');
+                    if (emptyFavorites) {
+                        favoritesItems.removeChild(emptyFavorites);
+                    }
+                    
+                    favoritesItems.appendChild(favoriteItem);
+                }
+            });
+        });
+
+        // Remove from favorites
+        favoritesItems.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-favorite')) {
+                const item = e.target.closest('.favorite-item');
+                const productId = item.getAttribute('data-id');
+                
+                // Update favorites count
+                favoritesCount--;
+                favoritesCountElement.textContent = favoritesCount;
+                if (favoritesCount === 0) {
+                    favoritesCountElement.classList.add('hidden');
+                }
+                
+                // Remove item from favorites sidebar
+                item.remove();
+                
+                // Also update the heart icon in the product card
+                const productCard = document.querySelector(`.product-card[data-id="${productId}"]`);
+                if (productCard) {
+                    const heartIcon = productCard.querySelector('.favorite-btn i');
+                    heartIcon.classList.remove('fas', 'text-red-500');
+                    heartIcon.classList.add('far');
+                }
+                
+                // Show empty message if no favorites left
+                if (favoritesItems.children.length === 0) {
+                    favoritesItems.innerHTML = `
+                        <div class="text-center text-gray-500 py-10">
+                            <i class="fas fa-heart text-4xl mb-2 text-gray-200"></i>
+                            <p>Seus favoritos estão vazios</p>
+                        </div>
+                    `;
+                }
+            }
+        });
+
+        // Product details functionality
+        const productDetailModal = document.getElementById('product-details-modal');
+        const productImageContainer = document.getElementById('product-image-container');
+        
+        // Image zoom functionality
+        productImageContainer.addEventListener('click', function() {
+            this.classList.toggle('zoomed');
+        });
+        
+        // Add click handlers to product cards (excluding buttons)
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Only show details if click was directly on the card or image
+                if (e.target === this || e.target.classList.contains('product-image') || 
+                    e.target.classList.contains('w-full') || e.target.classList.contains('h-48')) {
+                    const productId = this.getAttribute('data-id');
+                    showProductDetails(productId);
+                }
+            });
+        });
+        const closeProductModal = document.getElementById('close-product-modal');
+        
+        // Product data for all products
+        const products = {
+            9: {
+                name: "Bota Feminina Country",
+                image: "IMG/botafeminina.jpeg",
+                price: "R$ 299,90",
+                oldPrice: "R$ 349,90",
+                rating: "95%",
+                reviews: "(28)",
+                description: "Bota feminina em couro legítimo, perfeita para eventos country com conforto e estilo.",
+                specs: [
+                    "Material: Couro legítimo",
+                    "Tamanhos: 33 a 40",
+                    "Cores: Marrom, Preto",
+                    "Garantia: 6 meses"
+                ]
+            },
+            10: {
+                name: "Camiseta Country Masculina",
+                image: "IMG/camisamassculina",
+                price: "R$ 79,90",
+                oldPrice: "",
+                rating: "90%",
+                reviews: "(35)",
+                description: "Camiseta masculina com estampa country em algodão de alta qualidade.",
+                specs: [
+                    "Material: 100% algodão",
+                    "Tamanhos: P, M, G, GG",
+                    "Cores: Branco, Preto, Azul",
+                    "Lavagem: Máquina"
+                ]
+            },
+            11: {
+                name: "Camisa Feminina Country",
+                image: "IMG/camisafemenina,jpeg",
+                price: "R$ 119,90",
+                oldPrice: "R$ 149,90",
+                rating: "85%",
+                reviews: "(42)",
+                description: "Camisa feminina country com detalhes exclusivos e tecido leve.",
+                specs: [
+                    "Material: Algodão e poliéster",
+                    "Tamanhos: P, M, G",
+                    "Cores: Rosa, Azul, Branco",
+                    "Lavagem: Máquina"
+                ]
+            },
+            12: {
+                name: "Laço Feminino Country",
+                image: "IMG/fitafeminino.jpeg",
+                price: "R$ 69,90",
+                oldPrice: "",
+                rating: "100%",
+                reviews: "(19)",
+                description: "Laço feminino country com detalhes em renda e tecido premium.",
+                specs: [
+                    "Material: Tecido premium e renda",
+                    "Tamanho: Único",
+                    "Cores: Rosa, Azul, Branco",
+                    "Lavagem: À mão"
+                ]
+            },
+            13: {
+                name: "Bota de Couro Feminina",
+                image: "IMG/botafemenina2.jpeg",
+                price: "R$ 349,90",
+                oldPrice: "R$ 399,90",
+                rating: "95%",
+                reviews: "(32)",
+                description: "Bota feminina em couro legítimo com acabamento premium e palmilha confortável.",
+                specs: [
+                    "Material: Couro legítimo",
+                    "Tamanhos: 34 a 40",
+                    "Cores: Marrom, Preto, Vermelho",
+                    "Garantia: 12 meses"
+                ]
+            },
+            1: {
+                name: "Chapéu de Peão Premium",
+                image: "IMG/chapeucountry.jpeg",
+                price: "R$ 189,90",
+                oldPrice: "R$ 219,90",
+                rating: "90%",
+                reviews: "(48)",
+                description: "Chapéu de alta qualidade feito com materiais premium, perfeito para eventos country e rodeios.",
+                specs: [
+                    "Material: Couro legítimo",
+                    "Tamanho: Único (ajustável)",
+                    "Cor: Marrom",
+                    "Garantia: 6 meses"
+                ]
+            },
+            2: {
+                name: "Bota Country Couro Legítimo",
+                image: "IMG/botas.jpeg",
+                price: "R$ 349,90",
+                oldPrice: "",
+                rating: "80%",
+                reviews: "(32)",
+                description: "Bota feita em couro legítimo, resistente e confortável para longas jornadas.",
+                specs: [
+                    "Material: Couro legítimo",
+                    "Tamanhos: 36 a 44",
+                    "Cores: Marrom, Preto",
+                    "Garantia: 12 meses"
+                ]
+            },
+            3: {
+                name: "Cinto de Prata com Fivela",
+                image: "IMG/cinto.jpeg",
+                price: "R$ 129,90",
+                oldPrice: "R$ 159,90",
+                rating: "100%",
+                reviews: "(56)",
+                description: "Cinto com fivela de prata 925 e correia de couro genuíno.",
+                specs: [
+                    "Material: Prata 925 e couro",
+                    "Tamanhos: P, M, G",
+                    "Peso: 180g",
+                    "Garantia: 6 meses"
+                ]
+            },
+            4: {
+                name: "Camisa Xadrez Country",
+                image: "IMG/camisaxadrex.jpeg",
+                price: "R$ 99,90",
+                oldPrice: "",
+                rating: "90%",
+                reviews: "(41)",
+                description: "Camisa xadrez em algodão, perfeita para eventos country.",
+                specs: [
+                    "Material: 100% algodão",
+                    "Tamanhos: P, M, G, GG",
+                    "Cores: Vermelho/Preto, Azul/Branco",
+                    "Lavagem: Máquina"
+                ]
+            },
+            5: {
+                name: "Colete de Couro Premium",
+                image: "IMG/coletecouro.jpeg",
+                price: "R$ 279,90",
+                oldPrice: "",
+                rating: "80%",
+                reviews: "(12)",
+                description: "Colete de couro premium para proteção e estilo country.",
+                specs: [
+                    "Material: Couro legítimo",
+                    "Tamanhos: P, M, G",
+                    "Cor: Marrom",
+                    "Garantia: 6 meses"
+                ]
+            },
+            6: {
+                name: "Laço Country Estilizado",
+                image: "IMG/laço.jpeg",
+                price: "R$ 89,90",
+                oldPrice: "R$ 109,90",
+                rating: "100%",
+                reviews: "(8)",
+                description: "Laço country estilizado para complementar seu visual.",
+                specs: [
+                    "Material: Tecido premium",
+                    "Tamanho: Único",
+                    "Cores: Variadas",
+                    "Lavagem: À mão"
+                ]
+            },
+            7: {
+                name: "Calça Jeans Resistente",
+                image: "IMG/calçajeans.jpeg",
+                price: "R$ 159,90",
+                oldPrice: "",
+                rating: "90%",
+                reviews: "(23)",
+                description: "Calça jeans resistente para trabalho e eventos country.",
+                specs: [
+                    "Material: Jeans 100% algodão",
+                    "Tamanhos: 38 a 50",
+                    "Cor: Azul",
+                    "Garantia: 3 meses"
+                ]
+            },
+            8: {
+                name: "Luvas de Couro para Montaria",
+                image: "IMG/luvas.jpeg",
+                price: "R$ 79,90",
+                oldPrice: "R$ 99,90",
+                rating: "80%",
+                reviews: "(17)",
+                description: "Luvas de couro para proteção durante montaria.",
+                specs: [
+                    "Material: Couro sintético",
+                    "Tamanhos: P, M, G",
+                    "Cor: Marrom",
+                    "Garantia: 3 meses"
+                ]
+            }
+        };
+
+        function showProductDetails(productId) {
+            const product = products[productId];
+            
+            document.getElementById('product-detail-image').src = product.image;
+            document.getElementById('product-detail-name').textContent = product.name;
+            document.getElementById('product-detail-price').textContent = product.price;
+            document.getElementById('product-detail-rating').style.width = product.rating;
+            document.getElementById('product-detail-reviews').textContent = product.reviews;
+            document.getElementById('product-detail-description').textContent = product.description;
+            
+            const specsList = document.getElementById('product-detail-specs');
+            specsList.innerHTML = '';
+            product.specs.forEach(spec => {
+                const li = document.createElement('li');
+                li.textContent = spec;
+                specsList.appendChild(li);
+            });
+            
+            productDetailModal.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+        }
+
+        // Favorite button in modal
+        productDetailModal.addEventListener('click', function(e) {
+            if (e.target.closest('.favorite-btn-detail')) {
+                const btn = e.target.closest('.favorite-btn-detail');
+                const heartIcon = btn.querySelector('i');
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas', 'text-red-500');
+                
+                // Get current product ID from modal
+                const productId = document.getElementById('product-detail-name').getAttribute('data-id');
+                
+                // Update main product card favorite button
+                const productCard = document.querySelector(`.product-card[data-id="${productId}"]`);
+                if (productCard) {
+                    const cardHeartIcon = productCard.querySelector('.favorite-btn i');
+                    cardHeartIcon.className = heartIcon.className;
+                }
+            }
+        });
+
+        closeProductModal.addEventListener('click', () => {
+            productDetailModal.classList.add('hidden');
+            overlay.classList.add('hidden');
+        });
+
+        // Category filtering
+        const categoryLinks = document.querySelectorAll('.category-card');
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const category = this.querySelector('span').textContent.toLowerCase();
+                
+                document.querySelectorAll('.product-card').forEach(card => {
+                    if (card.getAttribute('data-category').includes(category)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Reset filters
+        document.getElementById('reset-filters').addEventListener('click', () => {
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.style.display = 'block';
+            });
+        });
+
+        // Hat Button Functionality
+        const hatButton = document.getElementById('hat-button');
+        const hatImageModal = document.getElementById('hat-image-modal');
+        const closeHatModal = document.getElementById('close-hat-modal');
+        const overlay = document.getElementById('overlay');
+
+        hatButton.addEventListener('click', () => {
+            hatImageModal.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+        });
+
+        closeHatModal.addEventListener('click', () => {
+            hatImageModal.classList.add('hidden');
+            overlay.classList.add('hidden');
+        });
+
+        overlay.addEventListener('click', () => {
+            hatImageModal.classList.add('hidden');
+            overlay.classList.add('hidden');
+        });
+
+        // Favorite Button Functionality - Only adds to favorites
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const heartIcon = this.querySelector('i');
+                
+                // Only add if not already favorited
+                if (!heartIcon.classList.contains('fas')) {
+                    heartIcon.classList.remove('far');
+                    heartIcon.classList.add('fas', 'text-red-500');
+                    
+                    // Update favorites count
+                    favoritesCount++;
+                    favoritesCountElement.textContent = favoritesCount;
+                    favoritesCountElement.classList.remove('hidden');
+                    
+                    const productCard = this.closest('.product-card');
+                    const productName = productCard.querySelector('h3').textContent;
+                    const productPrice = productCard.querySelector('.font-bold.text-orange-600').textContent;
+                    const productImage = productCard.querySelector('img').src;
+                    const productId = productCard.getAttribute('data-id') || Date.now();
+                    
+                    const favoriteItem = document.createElement('div');
+                    favoriteItem.className = 'favorite-item bg-orange-50 rounded-lg p-3 mb-3 flex items-center';
+                    favoriteItem.setAttribute('data-id', productId);
+                    favoriteItem.innerHTML = `
+                        <img src="${productImage}" alt="${productName}" class="w-16 h-16 object-cover rounded mr-3">
+                        <div class="flex-1">
+                            <h4 class="font-medium">${productName}</h4>
+                            <p class="text-orange-600 font-bold">${productPrice}</p>
+                        </div>
+                        <button class="remove-favorite text-gray-500 hover:text-red-500">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    // Remove empty favorites message if it exists
+                    const emptyFavorites = favoritesItems.querySelector('.text-center');
+                    if (emptyFavorites) {
+                        favoritesItems.removeChild(emptyFavorites);
+                    }
+                    
+                    favoritesItems.appendChild(favoriteItem);
+                }
+            });
+        });
+
+        // Remove from favorites only through the remove button in sidebar
+        favoritesItems.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-favorite')) {
+                const item = e.target.closest('.favorite-item');
+                const productId = item.getAttribute('data-id');
+                
+                // Update favorites count
+                favoritesCount--;
+                favoritesCountElement.textContent = favoritesCount;
+                if (favoritesCount === 0) {
+                    favoritesCountElement.classList.add('hidden');
+                }
+                
+                // Remove item from favorites sidebar
+                item.remove();
+                
+                // Also update the heart icon in the product card
+                const productCard = document.querySelector(`.product-card[data-id="${productId}"]`);
+                if (productCard) {
+                    const heartIcon = productCard.querySelector('.favorite-btn i');
+                    heartIcon.classList.remove('fas', 'text-red-500');
+                    heartIcon.classList.add('far');
+                }
+                
+                // Show empty message if no favorites left
+                if (favoritesItems.children.length === 0) {
+                    favoritesItems.innerHTML = `
+                        <div class="text-center text-gray-500 py-10">
+                            <i class="fas fa-heart text-4xl mb-2 text-gray-200"></i>
+                            <p>Seus favoritos estão vazios</p>
+                        </div>
+                    `;
+                }
+            }
+        });
+
+        // Cart Functionality
+        let cartCount = 0;
+        const cartCountElement = document.getElementById('cart-count');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartSubtotal = document.getElementById('cart-subtotal');
+        const cartTotal = document.getElementById('cart-total');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const closeCart = document.getElementById('close-cart');
+        const checkoutBtn = document.getElementById('checkout-btn');
+
+        // Add to cart buttons
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                cartCount++;
+                cartCountElement.textContent = cartCount;
+                cartCountElement.classList.add('cart-pulse');
+                
+                // Add item to cart sidebar
+                const productCard = this.closest('.product-card');
+                const productName = productCard.querySelector('h3').textContent;
+                const productPrice = productCard.querySelector('.font-bold.text-orange-600').textContent;
+                const productImage = productCard.querySelector('img').src;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item bg-orange-50 rounded-lg p-3 mb-3 flex items-center';
+                cartItem.innerHTML = `
+                    <img src="${productImage}" alt="${productName}" class="w-16 h-16 object-cover rounded mr-3">
+                    <div class="flex-1">
+                        <h4 class="font-medium">${productName}</h4>
+                        <p class="text-orange-600 font-bold">${productPrice}</p>
+                    </div>
+                    <button class="remove-item text-gray-500 hover:text-red-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                // Remove empty cart message if it exists
+                const emptyCart = cartItemsContainer.querySelector('.text-center');
+                if (emptyCart) {
+                    cartItemsContainer.removeChild(emptyCart);
+                }
+                
+                cartItemsContainer.appendChild(cartItem);
+                
+                // Update totals (simplified example)
+                const price = parseFloat(productPrice.replace('R$ ', '').replace(',', '.'));
+                const currentSubtotal = parseFloat(cartSubtotal.textContent.replace('R$ ', '').replace(',', '.') || '0');
+                const newSubtotal = currentSubtotal + price;
+                
+                cartSubtotal.textContent = `R$ ${newSubtotal.toFixed(2).replace('.', ',')}`;
+                cartTotal.textContent = `R$ ${newSubtotal.toFixed(2).replace('.', ',')}`;
+                
+                // Remove animation class after animation ends
+                setTimeout(() => {
+                    cartCountElement.classList.remove('cart-pulse');
+                }, 500);
+            });
+        });
+
+        // Toggle cart sidebar
+        cartBtn.addEventListener('click', () => {
+            cartSidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+        });
+
+        closeCart.addEventListener('click', () => {
+            cartSidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        });
+
+        // Remove item from cart
+        cartItemsContainer.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-item')) {
+                const item = e.target.closest('.cart-item');
+                const priceText = item.querySelector('.text-orange-600').textContent;
+                const price = parseFloat(priceText.replace('R$ ', '').replace(',', '.'));
+                
+                // Update cart count
+                cartCount--;
+                cartCountElement.textContent = cartCount;
+                
+                // Update totals
+                const currentSubtotal = parseFloat(cartSubtotal.textContent.replace('R$ ', '').replace(',', '.'));
+                const newSubtotal = currentSubtotal - price;
+                
+                cartSubtotal.textContent = `R$ ${newSubtotal.toFixed(2).replace('.', ',')}`;
+                cartTotal.textContent = `R$ ${newSubtotal.toFixed(2).replace('.', ',')}`;
+                
+                // Remove item
+                item.remove();
+                
+                // Show empty cart message if cart is empty
+                if (cartItemsContainer.children.length === 0) {
+                    cartItemsContainer.innerHTML = `
+                        <div class="text-center text-gray-500 py-10">
+                            <i class="fas fa-shopping-cart text-4xl mb-2 text-gray-200"></i>
+                            <p>Seu carrinho está vazio</p>
+                        </div>
+                    `;
+                }
+            }
+        });
+
+        // Checkout button
+        checkoutBtn.addEventListener('click', () => {
+            alert('Compra finalizada com sucesso!');
+            // Reset cart
+            cartCount = 0;
+            cartCountElement.textContent = cartCount;
+            cartItemsContainer.innerHTML = `
+                <div class="text-center text-gray-500 py-10">
+                    <i class="fas fa-shopping-cart text-4xl mb-2 text-gray-200"></i>
+                    <p>Seu carrinho está vazio</p>
+                </div>
+            `;
+            cartSubtotal.textContent = 'R$ 0,00';
+            cartTotal.textContent = 'R$ 0,00';
+            cartSidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        });
+    </script>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Finalizar Compra</h3>
+                    <button id="close-checkout-modal" class="text-gray-500 hover:text-orange-600 transition duration-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="flex border-b mb-6">
+                    <button class="tab-btn py-2 px-4 font-medium border-b-2 border-orange-500 text-orange-600" data-tab="shipping">Endereço</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="payment">Pagamento</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="confirmation">Confirmação</button>
+                </div>
+                
+                <!-- Shipping Address -->
+                <div id="shipping" class="tab-content active">
+                    <h4 class="text-lg font-medium mb-4">Informações de Entrega</h4>
+                    
+                    <form id="shipping-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="first-name" class="block text-gray-700 mb-2">Nome</label>
+                                <input type="text" id="first-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                            <div>
+                                <label for="last-name" class="block text-gray-700 mb-2">Sobrenome</label>
+                                <input type="text" id="last-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="address" class="block text-gray-700 mb-2">Endereço</label>
+                            <input type="text" id="address" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label for="city" class="block text-gray-700 mb-2">Cidade</label>
+                                <input type="text" id="city" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                            <div>
+                                <label for="state" class="block text-gray-700 mb-2">Estado</label>
+                                <select id="state" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                                    <option value="">Selecione</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="zip-code" class="block text-gray-700 mb-2">CEP</label>
+                                <input type="text" id="zip-code" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="phone" class="block text-gray-700 mb-2">Telefone</label>
+                            <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button type="button" class="next-tab bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 font-medium transition duration-300" data-next-tab="payment">
+                                Próximo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Payment -->
+                <div id="payment" class="tab-content">
+                    <h4 class="text-lg font-medium mb-4">Método de Pagamento</h4>
+                    
+                    <div class="mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                            <button class="payment-method border rounded-lg p-4 flex flex-col items-center hover:border-orange-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500" data-method="credit">
+                                <i class="far fa-credit-card text-2xl mb-2 text-gray-600"></i>
+                                <span>Cartão de Crédito</span>
+                            </button>
+                            <button class="payment-method border rounded-lg p-4 flex flex-col items-center hover:border-orange-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500" data-method="debit">
+                                <i class="fas fa-credit-card text-2xl mb-2 text-gray-600"></i>
+                                <span>Cartão de Débito</span>
+                            </button>
+                            <button class="payment-method border rounded-lg p-4 flex flex-col items-center hover:border-orange-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500" data-method="pix">
+                                <i class="fas fa-qrcode text-2xl mb-2 text-gray-600"></i>
+                                <span>PIX</span>
+                            </button>
+                            <button class="payment-method border rounded-lg p-4 flex flex-col items-center hover:border-orange-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500" data-method="boleto">
+                                <i class="fas fa-barcode text-2xl mb-2 text-gray-600"></i>
+                                <span>Boleto</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Credit Card Form (shown when credit/debit is selected) -->
+                        <div id="credit-card-form" class="hidden">
+                            <form id="payment-form">
+                                <div class="mb-4">
+                                    <label for="card-number" class="block text-gray-700 mb-2">Número do Cartão</label>
+                                    <input type="text" id="card-number" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="0000 0000 0000 0000">
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="card-name" class="block text-gray-700 mb-2">Nome no Cartão</label>
+                                    <input type="text" id="card-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Nome como está no cartão">
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="card-expiry" class="block text-gray-700 mb-2">Validade</label>
+                                        <input type="text" id="card-expiry" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="MM/AA">
+                                    </div>
+                                    <div>
+                                        <label for="card-cvv" class="block text-gray-700 mb-2">CVV</label>
+                                        <input type="text" id="card-cvv" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="000">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="card-installments" class="block text-gray-700 mb-2">Parcelamento</label>
+                                    <select id="card-installments" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                                        <option value="1">1x de R$ 100,00 sem juros</option>
+                                        <option value="2">2x de R$ 50,00 sem juros</option>
+                                        <option value="3">3x de R$ 33,33 sem juros</option>
+                                        <option value="4">4x de R$ 25,00 sem juros</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Pix Form (shown when pix is selected) -->
+                        <div id="pix-form" class="hidden">
+                            <div class="bg-orange-50 p-4 rounded-lg mb-4">
+                                <p class="text-orange-700">Você
+</body>
+</html>
